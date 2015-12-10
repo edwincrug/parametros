@@ -7,7 +7,7 @@ registrationModule.controller("parametroController", function ($scope, $filter, 
     //Grupo de funciones de inicio
     $scope.init = function () {
         
-
+    	$scope.nombre = "Genaro/Mario";
     };
 
     //Mensajes en caso de error
