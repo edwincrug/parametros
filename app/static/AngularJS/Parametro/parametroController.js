@@ -3,7 +3,6 @@ registrationModule.controller("parametroController", function ($scope, $filter, 
     //Propiedades
     $scope.oneAtATime = true;
     
-
     //Grupo de funciones de inicio
     $scope.init = function () {
         
