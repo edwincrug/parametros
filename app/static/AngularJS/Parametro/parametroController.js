@@ -1,4 +1,4 @@
-registrationModule.controller("parametroController", function ($scope, $filter, $rootScope, localStorageService, alertFactory, parametroRepository) {
+registrationModule.controller("parametroController", function ($scope, $filter, $rootScope, localStorageService, alertFactory, parametroRepository,mancomunadoRepository) {
 
     //Propiedades
     $scope.productoId = 1;
@@ -7,17 +7,23 @@ registrationModule.controller("parametroController", function ($scope, $filter, 
     $scope.sucursalId = 3;
     $scope.departamentoId = 13;
     $scope.tipoOrdenId = 1;
+    $scope.nodoId = 1;
     
     //Grupo de funciones de inicio
     $scope.init = function () {
-        
-    	$scope.nombre = "Genaro/Mario";
+        getData();
+    };
+
+    var getData = function(){
 
         parametroRepository.getEscalamiento($scope.productoId, $scope.usuarioId, $scope.empresaId, $scope.sucursalId, $scope.departamentoId, $scope.tipoOrdenId)
             .success(getEscalamientoSuccessCallback)
             .error(errorCallBack);
-    };
-
+                                                      
+        mancomunadoRepository.getMancomunados($scope.productoId, $scope.nodoId, $scope.empresaId, $scope.sucursalId, $scope.departamentoId, $scope.tipoOrdenId)
+            .success(getMancoumunadoSuccessCallback)
+            .error(errorCallBack);
+    }
     //Mensajes en caso de error
     var errorCallBack = function (data, status, headers, config) {
         alertFactory.error('Ocurrio un problema: ' + data);
@@ -38,11 +44,14 @@ registrationModule.controller("parametroController", function ($scope, $filter, 
 
     //Success obtiene lista de aprobadores por nivel
     var getAprobadoresSuccessCallback = function (data, status, headers, config) {
-        $scope.listaAprobadores = data;
+        $scope.listaAprobadores = data;depIdDepartamento, manc.tipoIdTipoOrden
         $('#viewAprobadores').modal('show');
         alertFactory.success('Aprobadores cargados.');
     };
 
-
-
+     //Succes obtiene lista de objetos de usuarios Mancomunados
+    var getMancoumunadoSuccessCallback = function (data, status, headers, config) {
+        $rootScope.listaMancomunados = data;
+        alertFactory.success('Datos de usuarios mancomunados cargados.');
+    };
 });
