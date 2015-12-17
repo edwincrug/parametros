@@ -54,4 +54,18 @@ registrationModule.controller("parametroController", function ($scope, $filter, 
         $rootScope.listaMancomunados = data;
         alertFactory.success('Datos de usuarios mancomunados cargados.');
     };
+
+    //Botón para mostrar aprobadores
+    $scope.MostrarUsuarios = function(usu){
+        parametroRepository.getMancomunados(usu.proc,usu.nodo, usu.empIdempresa, usu.sucIdsucursal, usu.depIddepartamento, usu.tipoidtipoorden)
+            .success(getUsuariosSuccessCallback)
+            .error(errorCallBack);
+    };
+
+    //Success obtiene lista de aprobadores por nivel
+    var getUsuariosSuccessCallback = function (data, status, headers, config) {
+        $scope.listaUsuarios = data;
+        $('#viewAprobadores').modal('show');
+        alertFactory.success('Usuarios cargados.');
+    };
 });
