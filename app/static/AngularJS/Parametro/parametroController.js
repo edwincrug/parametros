@@ -57,9 +57,19 @@ registrationModule.controller("parametroController", function ($scope, $filter, 
 
     //Botón para mostrar aprobadores
     $scope.MostrarUsuarios = function(usu){
-        parametroRepository.getMancomunados(usu.proc,usu.nodo, usu.empIdempresa, usu.sucIdsucursal, usu.depIddepartamento, usu.tipoidtipoorden)
-            .success(getUsuariosSuccessCallback)
-            .error(errorCallBack);
+        //Cargo los tipos de proceso de la entidad
+        $scope.listaTipoProceso = _tipoProceso;
+
+        $('#viewMancomunados').modal('show');
+        // parametroRepository.getMancomunados(usu.proc,usu.nodo, usu.empIdempresa, usu.sucIdsucursal, usu.depIddepartamento, usu.tipoidtipoorden)
+        //     .success(getUsuariosSuccessCallback)
+        //     .error(errorCallBack);
+    };
+
+    //Asigna el objeto Tipo Proceso
+    $scope.SetTipoProceso = function(tip) {
+        $scope.currentTipoProceso = tip;
+        dfdsfsdf
     };
 
     //Success obtiene lista de aprobadores por nivel
