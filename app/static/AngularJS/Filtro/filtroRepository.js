@@ -19,3 +19,5 @@ registrationModule.factory('filtroRepository', function ($http) {
         }
     };
 });
+
+//Esta es una prueba
