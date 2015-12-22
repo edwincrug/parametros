@@ -60,29 +60,6 @@ registrationModule.controller("parametroController", function ($scope, $filter, 
         alertFactory.success('Datos de usuarios mancomunados cargados.');
     };
 
-    //Botón para mostrar aprobadores
-    $scope.MostrarUsuarios = function(usu){
-        //Cargo los tipos de proceso de la entidad
-        $scope.listaTipoProceso = _tipoProceso;
-
-        filtroRepository.getSucursales($scope.usuarioId, $scope.empresaId)
-            .success(getSucursalesSuccessCallback)
-            .error(errorCallBack);
-        filtroRepository.getDepartamentos($scope.usuarioId, $scope.empresaId, $scope.sucursalesId)
-            .success(getDepartamentosSuccessCallback)
-            .error(errorCallBack);
-        filtroRepository.getTipoOrden()
-            .success(getTipoOrdenSuccessCallback)
-            .error(errorCallBack);
-
-        $('#viewUpdMancomunado').modal('show');        
-    };
-
-    //Botón para mostrar lista de Usuarios Mancomunados Disponibles
-    $scope.MostrarListaUsuarios = function(){
-        $('#viewUsuarios').modal('show');
-    }
-
     //Botón para dar de alta Nuevo Mancomunado
     $scope.MostrarNuevoMancomunado = function(){
         filtroRepository.getEmpresas($scope.empresaId)
@@ -98,7 +75,7 @@ registrationModule.controller("parametroController", function ($scope, $filter, 
             .success(getTipoOrdenSuccessCallback)
             .error(errorCallBack);
         $('#viewNewMancomunado').modal('show');
-    }
+    };
 
     //Asigna el objeto Tipo Proceso
     $scope.SetTipoProceso = function(tip) {
@@ -126,6 +103,52 @@ registrationModule.controller("parametroController", function ($scope, $filter, 
 
     //Asigna el objeto Departamento
     $scope.SetDepto= function(tip) {
+        $scope.currentDepto = tip;
+    };
+
+//Botón para dar de alta Nuevo Mancomunado  ///Falta colocar los parametros que vienen del front.
+    $scope.UpdateMancomunado = function(){
+        filtroRepository.getEmpresas($scope.empresaId)
+             .success(getEmpresasSuccessCallback)
+             .error(errorCallBack);
+        filtroRepository.getSucursales($scope.usuarioId, $scope.empresaId)
+            .success(getSucursalesSuccessCallback)
+            .error(errorCallBack);
+        filtroRepository.getDepartamentos($scope.usuarioId, $scope.empresaId, $scope.sucursalesId)
+            .success(getDepartamentosSuccessCallback)
+            .error(errorCallBack);
+        filtroRepository.getTipoOrden()
+            .success(getTipoOrdenSuccessCallback)
+            .error(errorCallBack);
+        $('#viewUpdMancomunado').modal('show');
+    };
+
+    //Asigna el objeto Tipo Proceso
+    $scope.UpdSetTipoProceso = function(tip) {
+        $scope.currentTipoProceso = tip;
+
+        filtroRepository.getEmpresas($scope.empresaId) //ID de tipo proceso   <<<<-------
+             .success(getEmpresasSuccessCallback)
+             .error(errorCallBack);
+    };
+
+    //Asigna el objeto Tipo Orden
+    $scope.UpdSetTipoOrden = function(orden) {
+        $scope.currentTipoOrden = orden;
+    };
+
+    //Asigna el objeto Empresa
+    $scope.UpdSetEmpresa = function(tip) {
+        $scope.currentEmpresa = tip;
+    };
+
+    //Asigna el objeto Sucursal
+    $scope.UpdSetSucursal= function(tip) {
+        $scope.currentSucursal = tip;
+    };
+
+    //Asigna el objeto Departamento
+    $scope.UpdSetDepto= function(tip) {
         $scope.currentDepto = tip;
     };
 
