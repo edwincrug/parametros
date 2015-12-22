@@ -18,7 +18,7 @@ registrationModule.controller("parametroController", function ($scope, $filter, 
         getData();
     };
 
-    //Recarga Pantalla Principal
+    //Recarga Pantalla Principal vlad
     var getData = function(){
 
         parametroRepository.getEscalamiento($scope.productoId, $scope.usuarioId, $scope.empresaId, $scope.sucursalId, $scope.departamentoId, $scope.tipoOrdenId)
