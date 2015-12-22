@@ -27,7 +27,7 @@
 							<td >{{ escalamiento.tipOrden }}</td> 
 							<td >
 								<button class="btn btn-primary" type="button" id="btnNuevo">
-									<span class="glyphicon glyphicon-user" aria-hidden="true" ng-click="MostrarAprobadores(escalamiento)"></span>
+									<span class="glyphicon glyphicon-user" aria-hidden="true" ng-click="MostrarUsuarios(escalamiento)"></span>
 								</button>
 							</td> 
 							<td >
@@ -39,7 +39,8 @@
 					</tbody> 
 				</table>
 			</tab>
-			<tab select="alertMe()" heading="Mancomunado">
+			<tab select="alertMe()" heading="Mancomunado">				
+				<button class="btn btn-default" type="button" id="btnNuevo" aria-hidden="true" ng-click="MostrarNuevoMancomunado()">Nuevo</button>
 				<table class="table table-condensed"> 
 					<thead> 
 						<tr> 
@@ -51,6 +52,7 @@
 							<th>Tipo</th> 
 							<th>Mancomunado</th>
 							<th>Editar</th>
+							<th>Eliminar</th>
 						</tr> 
 					</thead> 
 					<tbody> 
@@ -63,11 +65,15 @@
 							<td >{{ mancomunado.tipOrden }}</td> 
 							<td >{{ mancomunado.usuarioMancomunadoC }}</td> 
 							<td >
-								<button class="btn btn-primary" type="button" id="btnNuevo">
+								<button class="btn btn-primary" type="button" id="btnUpdate">
 									<span class="glyphicon glyphicon-pencil" aria-hidden="true" ng-click="MostrarUsuarios(mancomunado)"></span>
+								</button>								
+							</td>		
+							<td>
+								<button class="btn btn-danger" type="button" id="btnDelete">
+									<span class="glyphicon glyphicon-remove" aria-hidden="true" ng-click="DelMancomunado(mancomunado)"></span>
 								</button>
-							</td> 
-							
+							</td>					
 						</tr> 
 					</tbody> 
 				</table>
@@ -112,106 +118,219 @@
   </div><!-- /.modal-dialog -->
 </div><!-- /.modal -->
 
-<div class="modal fade" tabindex="-1" id="viewMancomunados">
+<div class="modal fade" tabindex="-1" id="viewUpdMancomunado">
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title">Usuarios Mancomunados</h4>
+        <h4 class="modal-title">Usuario Mancomunado</h4>
       </div>
       <div class="modal-body">
       	<form>
 		  <div class="form-group">
-		    <label for="exampleInputEmail1">Email address</label>
-		    <input type="email" class="form-control" id="exampleInputEmail1" placeholder="Email">
+		    <label for="TipoProceso">Tipo Proceso</label>
+		    <div class="dropdown">
+			  <button class="btn btn-default dropdown-toggle" type="button" id="dropdownProceso" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+			    {{ currentTipoProceso.nombre }}<span class="caret"></span>
+			  </button>
+			  <ul class="dropdown-menu" aria-labelledby="dropdownProceso">
+			    <li ng-repeat="tipo in listaTipoProceso"><a ng-click="SetTipoProceso(tipo)">{{ tipo.nombre }}</a></li>
+			  </ul>
+			</div>
 		  </div>
 		  <div class="form-group">
-		    <label for="exampleInputPassword1">Password</label>
-		    <input type="password" class="form-control" id="exampleInputPassword1" placeholder="Password">
+		    <label for="Empresa">Empresa</label>
+		    <div class="dropdown">
+			  <button class="btn btn-default dropdown-toggle" type="button" id="dropdownEmpresa" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+			    {{ currentEmpresa.nombre }}<span class="caret"></span>
+			  </button>
+			  <ul class="dropdown-menu" aria-labelledby="dropdownEmpresa">
+			    <li ng-repeat="tipo in listaEmpresas"><a ng-click="SetEmpresa(tipo)">{{ tipo.nombre }}</a></li>
+			  </ul>
+			</div>
 		  </div>
 		  <div class="form-group">
-		    <label for="exampleInputFile">File input</label>
-		    <input type="file" id="exampleInputFile">
-		    <p class="help-block">Example block-level help text here.</p>
+		    <label for="Sucursal">Sucursal</label>
+		    <div class="dropdown">
+			  <button class="btn btn-default dropdown-toggle" type="button" id="dropdownSucursal" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+			    {{ currentSucursal.nombre }}<span class="caret"></span>
+			  </button>
+			  <ul class="dropdown-menu" aria-labelledby="dropdownSucursal">
+			    <li ng-repeat="tipo in listaSucursales"><a ng-click="SetSucursal(tipo)">{{ tipo.nombre }}</a></li>
+			  </ul>
+			</div>
 		  </div>
-		
-		</form>
-
-
-      	<span class="label label-default">Tipo Proceso</span>
-       	<div class="dropdown">
-		  <button class="btn btn-default dropdown-toggle" type="button" id="dropdownProceso" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-		    {{ currentTipoProceso.nombre }}<span class="caret"></span>
-		  </button>
-		  <ul class="dropdown-menu" aria-labelledby="dropdownProceso">
-		    <li ng-repeat="tipo in listaTipoProceso"><a ng-click="SetTipoProceso(tipo)">{{ tipo.nombre }}</a></li>
-		  </ul>
-		</div>
-		<span class="label label-default">Nodo</span>
-		<div class="dropdown">
-		  <button class="btn btn-default dropdown-toggle" type="button" id="dropdownNodo" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-		    <span class="caret"></span>Seleccione...
-		  </button>
-		  <ul class="dropdown-menu" aria-labelledby="dropdownNodo">
-		    <li><a href="#">Action</a></li>
-		    <li><a href="#">Another action</a></li>
-		    <li><a href="#">Something else here</a></li>
-		  </ul>
-		</div>
-		<span class="label label-default">Empresa</span>
-		<div class="dropdown">
-		  <button class="btn btn-default dropdown-toggle" type="button" id="dropdownEmpresa" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-		    <span class="caret"></span>Seleccione...
-		  </button>
-		  <ul class="dropdown-menu" aria-labelledby="dropdownEmpresa">
-		    <li><a href="#">Action</a></li>
-		    <li><a href="#">Another action</a></li>
-		    <li><a href="#">Something else here</a></li>
-		  </ul>
-		</div>
-		<span class="label label-default">Sucursal</span>
-		<div class="dropdown">
-		  <button class="btn btn-default dropdown-toggle" type="button" id="dropdownSucursal" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-		    <span class="caret"></span>Seleccione...
-		  </button>
-		  <ul class="dropdown-menu" aria-labelledby="dropdownSucursal">
-		    <li><a href="#">Action</a></li>
-		    <li><a href="#">Another action</a></li>
-		    <li><a href="#">Something else here</a></li>
-		  </ul>
-		</div>		
-		<span class="label label-default">Departamento</span>
-		<div class="dropdown">
-		  <button class="btn btn-default dropdown-toggle" type="button" id="dropdownDepto" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-		    <span class="caret"></span>Seleccione...
-		  </button>
-		  <ul class="dropdown-menu" aria-labelledby="dropdownDepto">
-		    <li><a href="#">Action</a></li>
-		    <li><a href="#">Another action</a></li>
-		    <li><a href="#">Something else here</a></li>
-		  </ul>
-		</div>
-		<span class="label label-default">Tipo Orden</span>
-		<div class="dropdown">
-		  <button class="btn btn-default dropdown-toggle" type="button" id="dropdownOrden" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-		    <span class="caret"></span>Seleccione...
-		  </button>
-		  <ul class="dropdown-menu" aria-labelledby="dropdownOrden">
-		    <li><a href="#">Action</a></li>
-		    <li><a href="#">Another action</a></li>
-		    <li><a href="#">Something else here</a></li>
-		  </ul>
-		</div>
+		  <div class="form-group">
+		    <label for="Departamento">Departamento</label>
+		    <div class="dropdown">
+			  <button class="btn btn-default dropdown-toggle" type="button" id="dropdownDepartamento" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+			    {{ currentDepto.nombre }}<span class="caret"></span>
+			  </button>
+			  <ul class="dropdown-menu" aria-labelledby="dropdownDepartamento">
+			    <li ng-repeat="tipo in listaDeptos"><a ng-click="SetDepto(tipo)">{{ tipo.nombre }}</a></li>
+			  </ul>
+			</div>
+		  </div>
+		  <div class="form-group">
+		    <label for="TipoOrden">Tipo Orden</label>
+		    <div class="dropdown">
+			  <button class="btn btn-default dropdown-toggle" type="button" id="dropdownTipoOrden" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+			    {{ currentTipoOrden.nombre }}<span class="caret"></span>
+			  </button>
+			  <ul class="dropdown-menu" aria-labelledby="dropdownTipoOrden">
+			    <li ng-repeat="tipo in listaTipoOrden"><a ng-click="SetTipoOrden(tipo)">{{ tipo.nombre }}</a></li>
+			  </ul>
+			</div>
+		  </div>
+		  <div class="row">
+		  <div class="col-lg-4">
+		    <div class="input-group">
+		      <span class="input-group-btn">
+		      </span>
+		      <label for="TipoOrden">Usuario Mancomunado</label>
+		    </div><!-- /input-group -->
+		  </div><!-- /.col-lg-6 -->
+		  <div class="col-lg-6">
+		    <div class="input-group">
+		      <input type="text" class="form-control" readonly>{{ currentUSuario }}
+		      <span class="input-group-btn">
+		        <button class="btn btn-default" type="button" ng-click="MostrarListaUsuarios()">Buscar</button>
+		      </span>
+		    </div><!-- /input-group -->
+		  </div><!-- /.col-lg-6 -->
+		</div><!-- /.row -->
+		</form> 		
+      	<div class="modal-footer">
+      	<button type="button" class="btn btn-default" ng-click="UpdMancomunado()">Actualizar</button>
+        <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
       </div>
-      <button class="btn btn-primary" type="button" id="btnNuevo">
-		<span class="glyphicon glyphicon-plus-sign" aria-hidden="true" ng-click="AgregarUsuarios(mancomunado)"></span>
-	  </button>
-	  <tabset>
-			<tab select="alertMe()" heading="Usuarios Mancomunados">
-				<span class="label label-default">Usuario Mancomunado</span>
-				<input type="text" class="form-control">
-			</tab>
-	  </tabset>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+<div class="modal fade" tabindex="-1" id="viewUsuarios">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title">Usuarios</h4>
+      </div>
+      <div class="modal-body">
+      	<form>
+      		<label>Usuario: <input ng-model="buscarText"></label>
+      		<table class="table table-condensed"> 
+					<thead> 
+						<tr> 
+							<th>Id Usuario</th> 
+							<th>Nombre</th> 
+							<th>Apellido Paterno</th> 
+							<th>Apellido Materno</th> 
+						</tr> 
+					</thead> 
+					<tbody> 
+						<tr ng-repeat="usuarios in usuarios | filter:buscarText"> 
+							<td >{{ usuarios.idUsuario }}</td> 
+							<td >{{ usuarios.nombre }}</td> 
+							<td >{{ usuarios.aPaterno }}</td> 
+							<td >{{ usuarios.aMaterno }}</td> 
+						</tr> 
+						<td >
+							<button class="btn btn-primary" type="button" id="btnSeleccionar">
+								<span class="glyphicon glyphicon-ok" aria-hidden="true" ng-click="SetUsuario(usuarios)"></span>
+							</button>
+						</td>
+					</tbody> 
+				</table>
+		</form>     
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+      </div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+<div class="modal fade" tabindex="-1" id="viewNewMancomunado">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title">Nuevo Usuario Mancomunado</h4>
+      </div>
+      <div class="modal-body">
+      	<form>
+		  <div class="form-group">
+		    <label for="TipoProceso">Tipo Proceso</label>
+		    <div class="dropdown">
+			  <button class="btn btn-default dropdown-toggle" type="button" id="dropdownProceso" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+			    {{ currentTipoProceso.nombre }}<span class="caret"></span>
+			  </button>
+			  <ul class="dropdown-menu" aria-labelledby="dropdownProceso">
+			    <li ng-repeat="tipo in listaTipoProceso"><a ng-click="SetTipoProceso(tipo)">{{ tipo.nombre }}</a></li>
+			  </ul>
+			</div>
+		  </div>
+		  <div class="form-group">
+		    <label for="Empresa">Empresa</label>
+		    <div class="dropdown">
+			  <button class="btn btn-default dropdown-toggle" type="button" id="dropdownEmpresa" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+			    {{ currentEmpresa.nombre }}<span class="caret"></span>
+			  </button>
+			  <ul class="dropdown-menu" aria-labelledby="dropdownEmpresa">
+			    <li ng-repeat="tipo in listaEmpresas"><a ng-click="SetEmpresa(tipo)">{{ tipo.nombre }}</a></li>
+			  </ul>
+			</div>
+		  </div>
+		  <div class="form-group">
+		    <label for="Sucursal">Sucursal</label>
+		    <div class="dropdown">
+			  <button class="btn btn-default dropdown-toggle" type="button" id="dropdownSucursal" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+			    {{ currentSucursal.nombre }}<span class="caret"></span>
+			  </button>
+			  <ul class="dropdown-menu" aria-labelledby="dropdownSucursal">
+			    <li ng-repeat="tipo in listaSucursales"><a ng-click="SetSucursal(tipo)">{{ tipo.nombre }}</a></li>
+			  </ul>
+			</div>
+		  </div>
+		  <div class="form-group">
+		    <label for="Departamento">Departamento</label>
+		    <div class="dropdown">
+			  <button class="btn btn-default dropdown-toggle" type="button" id="dropdownDepartamento" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+			    {{ currentDepto.nombre }}<span class="caret"></span>
+			  </button>
+			  <ul class="dropdown-menu" aria-labelledby="dropdownDepartamento">
+			    <li ng-repeat="tipo in listaDeptos"><a ng-click="SetDepto(tipo)">{{ tipo.nombre }}</a></li>
+			  </ul>
+			</div>
+		  </div>
+		  <div class="form-group">
+		    <label for="TipoOrden">Tipo Orden</label>
+		    <div class="dropdown">
+			  <button class="btn btn-default dropdown-toggle" type="button" id="dropdownTipoOrden" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+			    {{ currentTipoOrden.nombre }}<span class="caret"></span>
+			  </button>
+			  <ul class="dropdown-menu" aria-labelledby="dropdownTipoOrden">
+			    <li ng-repeat="tipo in listaTipoOrden"><a ng-click="SetTipoOrden(tipo)">{{ tipo.nombre }}</a></li>
+			  </ul>
+			</div>
+		  </div>		  
+		<div class="row">
+		  <div class="col-lg-4">
+		    <div class="input-group">
+		      <span class="input-group-btn">
+		      </span>
+		      <label for="TipoOrden">Usuario Mancomunado</label>
+		    </div><!-- /input-group -->
+		  </div><!-- /.col-lg-6 -->
+		  <div class="col-lg-6">
+		    <div class="input-group">
+		      <input type="text" class="form-control" readonly>
+		      <span class="input-group-btn">
+		        <button class="btn btn-default" type="button" ng-click="MostrarListaUsuarios()">Buscar</button>
+		      </span>
+		    </div><!-- /input-group -->
+		  </div><!-- /.col-lg-6 -->
+		</div><!-- /.row -->
+		</form>
       <div class="modal-footer">
         <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
       </div>

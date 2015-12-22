@@ -1,4 +1,4 @@
-registrationModule.controller("parametroController", function ($scope, $filter, $rootScope, localStorageService, alertFactory, parametroRepository,mancomunadoRepository) {
+registrationModule.controller("parametroController", function ($scope, $filter, $rootScope, localStorageService, alertFactory, parametroRepository,mancomunadoRepository, filtroRepository) {
 
     //Propiedades
     $scope.productoId = 1;
@@ -8,12 +8,17 @@ registrationModule.controller("parametroController", function ($scope, $filter, 
     $scope.departamentoId = 13;
     $scope.tipoOrdenId = 1;
     $scope.nodoId = 1;
+    $scope.divisionId = 1;
+    $scope.sucursalesId = 1;
+    $scope.usuarioMancomunadoId = 5;
+
     
     //Grupo de funciones de inicio
     $scope.init = function () {
         getData();
     };
 
+    //Recarga Pantalla Principal
     var getData = function(){
 
         parametroRepository.getEscalamiento($scope.productoId, $scope.usuarioId, $scope.empresaId, $scope.sucursalId, $scope.departamentoId, $scope.tipoOrdenId)
@@ -60,22 +65,142 @@ registrationModule.controller("parametroController", function ($scope, $filter, 
         //Cargo los tipos de proceso de la entidad
         $scope.listaTipoProceso = _tipoProceso;
 
-        $('#viewMancomunados').modal('show');
-        // parametroRepository.getMancomunados(usu.proc,usu.nodo, usu.empIdempresa, usu.sucIdsucursal, usu.depIddepartamento, usu.tipoidtipoorden)
-        //     .success(getUsuariosSuccessCallback)
-        //     .error(errorCallBack);
+        filtroRepository.getSucursales($scope.usuarioId, $scope.empresaId)
+            .success(getSucursalesSuccessCallback)
+            .error(errorCallBack);
+        filtroRepository.getDepartamentos($scope.usuarioId, $scope.empresaId, $scope.sucursalesId)
+            .success(getDepartamentosSuccessCallback)
+            .error(errorCallBack);
+        filtroRepository.getTipoOrden()
+            .success(getTipoOrdenSuccessCallback)
+            .error(errorCallBack);
+
+        $('#viewUpdMancomunado').modal('show');        
     };
+
+    //Botón para mostrar lista de Usuarios Mancomunados Disponibles
+    $scope.MostrarListaUsuarios = function(){
+        $('#viewUsuarios').modal('show');
+    }
+
+    //Botón para dar de alta Nuevo Mancomunado
+    $scope.MostrarNuevoMancomunado = function(){
+        filtroRepository.getEmpresas($scope.empresaId)
+             .success(getEmpresasSuccessCallback)
+             .error(errorCallBack);
+        filtroRepository.getSucursales($scope.usuarioId, $scope.empresaId)
+            .success(getSucursalesSuccessCallback)
+            .error(errorCallBack);
+        filtroRepository.getDepartamentos($scope.usuarioId, $scope.empresaId, $scope.sucursalesId)
+            .success(getDepartamentosSuccessCallback)
+            .error(errorCallBack);
+        filtroRepository.getTipoOrden()
+            .success(getTipoOrdenSuccessCallback)
+            .error(errorCallBack);
+        $('#viewNewMancomunado').modal('show');
+    }
 
     //Asigna el objeto Tipo Proceso
     $scope.SetTipoProceso = function(tip) {
         $scope.currentTipoProceso = tip;
-        dfdsfsdf
+
+        filtroRepository.getEmpresas($scope.empresaId) //ID de tipo proceso   <<<<-------
+             .success(getEmpresasSuccessCallback)
+             .error(errorCallBack);
     };
 
-    //Success obtiene lista de aprobadores por nivel
+    //Asigna el objeto Tipo Orden
+    $scope.SetTipoOrden = function(orden) {
+        $scope.currentTipoOrden = orden;
+    };
+
+    //Asigna el objeto Empresa
+    $scope.SetEmpresa = function(tip) {
+        $scope.currentEmpresa = tip;
+    };
+
+    //Asigna el objeto Sucursal
+    $scope.SetSucursal= function(tip) {
+        $scope.currentSucursal = tip;
+    };
+
+    //Asigna el objeto Departamento
+    $scope.SetDepto= function(tip) {
+        $scope.currentDepto = tip;
+    };
+
+    //Success obtiene lista de usuarios
     var getUsuariosSuccessCallback = function (data, status, headers, config) {
         $scope.listaUsuarios = data;
         $('#viewAprobadores').modal('show');
         alertFactory.success('Usuarios cargados.');
     };
-});
+
+    //Success obtiene lista de empresas
+    var getEmpresasSuccessCallback = function(data, status, headers, config){
+        $scope.listaEmpresas = data;
+        alertFactory.success('Datos de Empresas cargados.');
+    };
+
+    //Success obtiene lista de departamentos
+    var getDepartamentosSuccessCallback = function(data, status, headers, config){
+        $scope.listaDeptos = data;
+        alertFactory.success('Datos de Departamentos cargados.');
+    };
+
+    //Success obtiene lista de sucursales
+    var getSucursalesSuccessCallback = function(data, status, headers, config){
+        $scope.listaSucursales = data;
+        alertFactory.success('Datos de Sucursales cargados.');
+    };
+
+    //Success obtiene lista de Tipo Orden
+    var getTipoOrdenSuccessCallback = function(data, status, headers, config){
+        $scope.listaTipoOrden = data;
+        alertFactory.success('Datos de Tipo Orden cargados.');   
+    };
+
+    //Mostrar lista Usuarios
+    $scope.listaUsuarios =  function(){
+        filtroRepository.getUsuarios()
+            .success(getUsuariosMancomunadosSuccessCallback)
+            .error(errorCallBack);
+    };
+
+    //Success obtiene lista de Usuarios
+    var getUsuariosMancomunadosSuccessCallback = function(data, status, headers, config){
+        $scope.usuarios = data;
+        alertFactory.success('Datos de los Usuarios cargados');
+    };
+
+    //Asigna el usuario seleccionado
+    $scope.SetUsuario= function(user) {
+        $scope.currentUsuario = user;
+    };
+
+    //Botón para Actualizar Usuario Mancomunado
+    $scope.UpdMancomunado = function(){
+        mancomunadoRepository.updateMancomunado($scope.productoId, $scope.nodoId, $scope.empresaId, $scope.sucursalId, $scope.departamentoId, $scope.tipoOrdenId, $scope.usuarioMancomunadoId)
+            .success(getUpdMancomunadoSuccessCallback)
+            .error(errorCallBack);
+    };
+
+    //Success Update Mancomunado
+    var getUpdMancomunadoSuccessCallback = function(data, status, headers, config){
+        getData();
+        alertFactory.success('Datos de los Usuarios cargados');
+    };
+
+    //Botón Delete Usuario Mancomunado
+    $scope.DelMancomunado = function(user){
+        mancomunadoRepository.deleteMancomunado($scope.productoId, $scope.nodoId, $scope.empresaId, $scope.sucursalId, $scope.departamentoId, $scope.tipoOrdenId, $scope.usuarioMancomunadoId)
+            .success(getDelMancomunadoSuccessCallback)
+            .error(errorCallBack);
+    };
+
+    //Success Update Mancomunado
+    var getDelMancomunadoSuccessCallback = function(data, status, headers, config){
+        getData();
+        alertFactory.success('Datos de los Usuarios cargados');
+    };
+}); 
