@@ -8,11 +8,11 @@ registrationModule.factory('mancomunadoRepository', function ($http) {
         insertMancomunados: function(proc, nodo, empresa, sucursal, departamento, tipo, mancomunado){
             return $http.post(mancomunadoUrl + '1|' + proc + '|' + nodo + '|' + empresa + '|' + sucursal + '|' + departamento + '|' + tipo + '|' + mancomunado);
         },
-        updateMancomunado: function(proc, nodo, empresa, sucursal, departamento, tipo, mancomunado){
-            return $http.post(mancomunadoUrl + '2|' + proc + '|' + nodo + '|' + empresa + '|' + sucursal + '|' + departamento + '|' + tipo + '|' + mancomunado);
+        updateMancomunado: function(id, mancomunado){
+            return $http.post(mancomunadoUrl + '2|' + id + '|' + mancomunado);
         },
-        deleteMancomunado: function(proc, nodo, empresa, sucursal, departamento, tipo, mancomunado){
-            return $http.post(mancomunadoUrl + '3|' + proc + '|' + nodo + '|' + empresa + '|' + sucursal + '|' + departamento + '|' + tipo + '|' + mancomunado);
+        deleteMancomunado: function(id){
+            return $http.post(mancomunadoUrl + '3|' + id);
         }
     };
 });

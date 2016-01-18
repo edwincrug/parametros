@@ -1,4 +1,4 @@
 var global_settings = {
-	urlCORS: 'http://192.168.20.9/ApiParametro',
+	urlCORS: 'http://localhost:51693',
 	liveReload: 1000
 } 	
