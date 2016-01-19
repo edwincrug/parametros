@@ -13,6 +13,17 @@
 		"outputStyle": 1,
 		"syntaxCheckerStyle": 1
 		},
+	"\/AngularJS\/Filtro\/filtroRepository.js": {
+		"fileType": 64,
+		"ignore": 0,
+		"ignoreWasSetByUser": 0,
+		"inputAbbreviatedPath": "\/AngularJS\/Filtro\/filtroRepository.js",
+		"outputAbbreviatedPath": "\/AngularJS\/Filtro\/min\/filtroRepository-min.js",
+		"outputPathIsOutsideProject": 0,
+		"outputPathIsSetByUser": 0,
+		"outputStyle": 1,
+		"syntaxCheckerStyle": 1
+		},
 	"\/AngularJS\/Mancomunado\/mancomunadoRepository.js": {
 		"fileType": 64,
 		"ignore": 0,
@@ -74,6 +85,17 @@
 		"ignoreWasSetByUser": 0,
 		"inputAbbreviatedPath": "\/AngularJS\/Parametro\/parametroController.js",
 		"outputAbbreviatedPath": "\/AngularJS\/Parametro\/min\/parametroController-min.js",
+		"outputPathIsOutsideProject": 0,
+		"outputPathIsSetByUser": 0,
+		"outputStyle": 1,
+		"syntaxCheckerStyle": 1
+		},
+	"\/AngularJS\/Parametro\/parametroRepository-dist.js": {
+		"fileType": 64,
+		"ignore": 0,
+		"ignoreWasSetByUser": 0,
+		"inputAbbreviatedPath": "\/AngularJS\/Parametro\/parametroRepository-dist.js",
+		"outputAbbreviatedPath": "\/AngularJS\/Parametro\/min\/parametroRepository-dist-min.js",
 		"outputPathIsOutsideProject": 0,
 		"outputPathIsSetByUser": 0,
 		"outputStyle": 1,
