@@ -5902,6 +5902,17 @@ button.list-group-item-danger.active:focus {
   filter: alpha(opacity=50);
   opacity: .5;
 }
+.closePersonality {
+  float: right;
+  font-size: 21px;
+  font-weight: bold;
+  line-height: 1;
+  color: #000;
+  text-shadow: 0 1px 0 #fff;
+  filter: alpha(opacity=20);
+  opacity: .9;
+  display:inline
+}
 button.close {
   -webkit-appearance: none;
   padding: 0;

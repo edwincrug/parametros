@@ -2,11 +2,11 @@ registrationModule.controller("parametroController", function ($scope, $filter, 
 
     //Propiedades
    $scope.productoId = 1;
-    $scope.usuarioId = 1;
-    $scope.empresaId = 1;
-    $scope.sucursalId = 3;
-    $scope.departamentoId = 13;
-    $scope.tipoOrdenId = 1;
+    $scope.usuarioId = 2;
+    $scope.empresaId = 0;
+    $scope.sucursalId = 1;
+    $scope.departamentoId = 0;
+    $scope.tipoOrdenId = 0;
      /*   $scope.productoId = 2;
     $scope.usuarioId = 1;
     $scope.empresaId = 1;
@@ -43,8 +43,12 @@ registrationModule.controller("parametroController", function ($scope, $filter, 
      $scope.sucursalSelected= false;
      $scope.deptoSelected= false;
      $scope.tipoOrdenSelected= false;
-
-    
+//Select de combos
+    $scope.SelectEmpresaEsc= null;
+    $scope.selectSucursarEsc=null;
+    $scope.editEscalamiento= null;
+    $scope.Pagina=null;
+     var listaApp = [];
     //Grupo de funciones de inicio
     $scope.init = function () {
         getData();
@@ -60,6 +64,9 @@ registrationModule.controller("parametroController", function ($scope, $filter, 
         mancomunadoRepository.getMancomunados($scope.productoId, $scope.nodoId, $scope.empresaId, $scope.sucursalId, $scope.departamentoId, $scope.tipoOrdenId)
             .success(getMancoumunadoSuccessCallback)
             .error(errorCallBack);
+
+        getAprobadores();
+        $scope.band=1;
     }
     //Mensajes en caso de error
     var errorCallBack = function (data, status, headers, config) {
@@ -70,15 +77,16 @@ registrationModule.controller("parametroController", function ($scope, $filter, 
     //Succes obtiene lista de objetos de tipo escalamiento
     var getEscalamientoSuccessCallback = function (data, status, headers, config) {
         $scope.listaEscalamiento = data;
-        alertFactory.success('Datos de escalamiento cargados.');
+       // alertFactory.success('Datos de escalamiento cargados.');
     };
 
     //Botón para mostrar aprobadores
     $scope.MostrarAprobadores = function(esc){
         $scope.listaTipoProceso = _tipoProceso;
-        parametroRepository.getAprobadores(esc.empIdempresa, esc.sucIdsucursal, esc.depIddepartamento, esc.tipoidtipoorden)
+        parametroRepository.getAprobadores($scope.empresaId, $scope.sucursalId , $scope.departamentoId , $scope.tipoOrdenId)
             .success(getAprobadoresSuccessCallback)
             .error(errorCallBack);
+          
     };
 
     //Success obtiene lista de aprobadores por nivel
@@ -91,13 +99,15 @@ registrationModule.controller("parametroController", function ($scope, $filter, 
      //Succes obtiene lista de objetos de usuarios Mancomunados
     var getMancoumunadoSuccessCallback = function (data, status, headers, config) {
         $rootScope.listaMancomunados = data;
-        alertFactory.success('Datos de usuarios mancomunados cargados.');
+        //alertFactory.success('Datos de usuarios mancomunados cargados.');
     };
 
     //Botón para dar de alta Nuevo Mancomunado
     $scope.NuevoMancomunado = function(){   
         //Cargo los tipos de proceso de la entidad
-
+         $scope.Pagina ="NewMancomunado";
+        $scope.listaSucursales=null;
+        $scope.listaDeptos=null;
         $scope.NewCurrentTipoProceso=null;
         $scope.NewCurrentEmpresa= null;
         $scope.NewCurrentSucursal=null;
@@ -112,15 +122,13 @@ registrationModule.controller("parametroController", function ($scope, $filter, 
         $scope.OpcionDefaultDepartamento="Seleccione una opción";
         $scope.listaTipoProceso = _tipoProceso;
 
-        filtroRepository.getSucursales($scope.usuarioId, $scope.empresaId)
-            .success(getSucursalesSuccessCallback)
-            .error(errorCallBack);
-        filtroRepository.getDepartamentos($scope.usuarioId, $scope.empresaId, $scope.sucursalesId)
-            .success(getDepartamentosSuccessCallback)
-            .error(errorCallBack);
-        filtroRepository.getTipoOrden()
-            .success(getTipoOrdenSuccessCallback)
-            .error(errorCallBack);
+             filtroRepository.getEmpresas() //ID de tipo proceso   <<<<-------
+             .success(getEmpresasSuccessCallback)
+             .error(errorCallBack);       
+         filtroRepository.getTipoOrden()
+             .success(getTipoOrdenSuccessCallback)
+             .error(errorCallBack);
+  
            
         $('#viewNewMancomunado').modal('show');
     };
@@ -128,41 +136,54 @@ registrationModule.controller("parametroController", function ($scope, $filter, 
     //Asigna el objeto Tipo Proceso
     $scope.SetTipoProceso = function(tip) {
         $scope.OpcionDefaultTipoProceso=null;
+        $scope.tipoProcesoItem= tip.valor;
        //Cargo los tipos de proceso de la entidad
         $scope.currentTipoProceso = tip;
 
-        filtroRepository.getEmpresas($scope.empresaId) //ID de tipo proceso   <<<<-------
-             .success(getEmpresasSuccessCallback)
-             .error(errorCallBack);
+ 
     };
 
     //Asigna el objeto Tipo Orden
     $scope.SetTipoOrden = function(orden) {
         $scope.OpcionDefaultTipoOrden = null;
+        $scope.tipoOrdenItem=orden.idtipoorden;
         $scope.currentTipoOrden = orden;
     };
 
     //Asigna el objeto Empresa
     $scope.SetEmpresa = function(tip) {        
         $scope.OpcionDefaultEmpresa = null;
+        $scope.SelectEmpresaEsc=tip.idEmpresa;
+        $scope.empresaItem= tip.idEmpresa;
         $scope.currentEmpresa = tip;
+        filtroRepository.getSucursales(tip.idEmpresa)
+             .success(getSucursalesSuccessCallback)
+             .error(errorCallBack);
     };
 
     //Asigna el objeto Sucursal
     $scope.SetSucursal= function(tip) {
         $scope.OpcionDefaultSucursal = null;
+         $scope.selectSucursarEsc= tip.idSucursal;
+         $scope.sucursalItem=tip.idSucursal;
         $scope.currentSucursal = tip;
+
+         filtroRepository.getDepartamentos( $scope.SelectEmpresaEsc, $scope.selectSucursarEsc)
+             .success(getDepartamentosSuccessCallback)
+             .error(errorCallBack);
     };
 
     //Asigna el objeto Departamento
     $scope.SetDepto= function(tip) {
         $scope.OpcionDefaultDepartamento = null;
+        $scope.deptoItem=tip.idDepartamento;
         $scope.currentDepto = tip;
     };
 
 //Botón para dar de alta Nuevo Mancomunado 
     $scope.UpdateMancomunado = function(mancomunado){
         //Checar estas 5 lineas.
+         $scope.Pagina="updMancomunado";
         $scope.tipoProcesoSelected= false;
         $scope.empresaSelected= false;
         $scope.sucursalSelected= false;
@@ -260,7 +281,29 @@ registrationModule.controller("parametroController", function ($scope, $filter, 
             $scope.UpdateMancomunado($scope.mancomunadoSelecciona);            
         }  
 
+            $scope.buscarText = null;
+         
+/**********************Valida en que ventana esta para volverla abrir*******************************************************/
 
+        if( $scope.Pagina=="NewMancomunado")
+        {
+              $('#viewNewMancomunado').modal('show');
+        }
+        if( $scope.Pagina=="NewEscalamiento")
+        {
+            $('#viewNewEscalamiento').modal('show');
+        }
+         if( $scope.Pagina=="updEscalamiento")
+        {
+            $('#viewUpdateEscalamiento').modal('show');
+        }
+         if( $scope.Pagina=="updMancomunado")
+        {
+            $('#viewUpdMancomunado').modal('show');
+        }
+        
+
+            //$('#viewUpdateEscalamiento').modal('show');
        // NOTA:  Verificar si va esta linea o el if anterior
        // $scope.UpdateMancomunado($scope.mancomunadoSelecciona);
     };
@@ -296,7 +339,7 @@ registrationModule.controller("parametroController", function ($scope, $filter, 
     var getUsuariosSuccessCallback = function (data, status, headers, config) {
         $scope.listaUsuarios = data;
         $('#viewAprobadores').modal('show');
-        alertFactory.success('Usuarios cargados.');
+        alertFactory.success('Aprobadores cargados.');
     };
 
     //Success obtiene lista de empresas
@@ -347,9 +390,29 @@ registrationModule.controller("parametroController", function ($scope, $filter, 
 
     //Mostrar lista Usuarios
     $scope.MostrarListaUsuarios =  function(){
+        if( $scope.Pagina=="NewMancomunado")
+        {
+              $('#viewNewMancomunado').modal('hide');
+        }
+        if( $scope.Pagina=="NewEscalamiento")
+        {
+            $('#viewNewEscalamiento').modal('hide');
+        }
+         if( $scope.Pagina=="updEscalamiento")
+        {
+            $('#viewUpdateEscalamiento').modal('hide');
+        }
+         if( $scope.Pagina=="updMancomunado")
+        {
+            $('#viewUpdMancomunado').modal('hide');
+        }
+        
+        $scope.buscarText = null;
+        
         filtroRepository.getUsuarios()
             .success(getUsuariosMancomunadosSuccessCallback)
             .error(errorCallBack);
+            $('#viewUsuarios').modal('show');
     };
 
 
@@ -368,9 +431,6 @@ registrationModule.controller("parametroController", function ($scope, $filter, 
             .success(getDelMancomunadoSuccessCallback)
             .error(errorCallBack);
     };
-
-
-
 
 
  //Limpia los datos en caso de cerrar la ventana de seleccionar usuario
@@ -407,6 +467,13 @@ registrationModule.controller("parametroController", function ($scope, $filter, 
         $scope.empresaItem=tip.idEmpresa;
         $scope.OpcionDefaultEmpresa = '';
         $scope.NewCurrentEmpresa = tip;
+        $scope.SelectEmpresaEsc=tip.idEmpresa
+        
+        filtroRepository.getSucursales(tip.idEmpresa)
+             .success(getSucursalesSuccessCallback)
+             .error(errorCallBack);
+
+
     };
 
     //Asigna el objeto Sucursal
@@ -415,6 +482,13 @@ registrationModule.controller("parametroController", function ($scope, $filter, 
         $scope.sucursalItem=tip.idSucursal;
         $scope.OpcionDefaultSucursal = '';
         $scope.NewCurrentSucursal = tip;
+
+        $scope.selectSucursarEsc= tip.idSucursal
+        
+
+         filtroRepository.getDepartamentos( $scope.SelectEmpresaEsc, $scope.selectSucursarEsc)
+             .success(getDepartamentosSuccessCallback)
+             .error(errorCallBack);
     };
 
     //Asigna el objeto Departamento
@@ -434,13 +508,12 @@ registrationModule.controller("parametroController", function ($scope, $filter, 
 
     //Success obtiene lista de Usuarios
     var getNewUsuariosMancomunadosSuccessCallback = function(data, status, headers, config){
-        $scope.usuarios = data;        
+        $scope.usuarios = data;          
         $('#viewUsuarios').modal('show');
-        alertFactory.success('Datos de los Usuarios cargados');
+        //alertFactory.success('Datos de los Usuarios cargados');
     };
 
     $scope.InsertarMancomunado = function(mancomunado){
-
 //1.-
         if($scope.tipoProcesoSelected==false) { errorCallBackTipoProceso(); return;  }
         if($scope.empresaSelected==false) { errorCallBackEmpresa();   return;     }
@@ -449,11 +522,6 @@ registrationModule.controller("parametroController", function ($scope, $filter, 
         if($scope.tipoOrdenSelected==false){ errorCallBackTipoOrden(); return; }
 
         SelectedDropdownFalse();
-     /*   $scope.tipoProcesoSelected= false;
-        $scope.empresaSelected= false;
-        $scope.sucursalSelected= false;
-        $scope.deptoSelected= false;
-        $scope.tipoOrdenSelected= false;*/
 
 
          $scope.tipoProcesoSelected==false;
@@ -471,21 +539,6 @@ registrationModule.controller("parametroController", function ($scope, $filter, 
     };
 
     //Botón nuevo escalamiento
-    $scope.MostrarNuevoEscalamiento = function(){ 
-        //Cargo los tipos de proceso de la entidad
-        $scope.listaTipoProceso = _tipoProceso;
-
-         filtroRepository.getSucursales($scope.usuarioId, $scope.empresaId)
-             .success(getSucursalesSuccessCallback)
-             .error(errorCallBack);
-         filtroRepository.getDepartamentos($scope.usuarioId, $scope.empresaId, $scope.sucursalesId)
-             .success(getDepartamentosSuccessCallback)
-             .error(errorCallBack);
-         filtroRepository.getTipoOrden()
-             .success(getTipoOrdenSuccessCallback)
-             .error(errorCallBack);
-        $('#viewNewEscalamiento').modal('show');
-    };
 
     //Asigna el objeto Tipo Proceso
     $scope.NewEscSetTipoProceso = function(tip) {
@@ -537,10 +590,6 @@ var SelectedDropdownFalse = function () {
     };
 
 
-
-
-
-
 var app = angular.module('formApp', []);
   /*   app.controller('MainCtrl', function($scope) {
   $scope.formData = {};*/
@@ -557,6 +606,9 @@ var app = angular.module('formApp', []);
      *****/
      //Botón nuevo escalamiento
     $scope.MostrarNuevoEscalamiento = function(){ 
+         $scope.Pagina="NewEscalamiento";
+        $scope.listaSucursales=null;
+        $scope.listaDeptos=null;
         $scope.OpcionDefaultTipoProceso="Seleccione una opción";
         $scope.OpcionDefaultTipoOrden = "Seleccione una opción";            
         $scope.OpcionDefaultEmpresa = "Seleccione una opción";
@@ -570,42 +622,24 @@ var app = angular.module('formApp', []);
         //Carga los tipos de proceso de la entidad
         $scope.listaTipoProceso = _tipoProceso;
 
-         filtroRepository.getSucursales($scope.usuarioId, $scope.empresaId)
-             .success(getSucursalesSuccessCallback)
+
+             filtroRepository.getEmpresas() //ID de tipo proceso   <<<<-------
+             .success(getEmpresasSuccessCallback)
              .error(errorCallBack);
-         filtroRepository.getDepartamentos($scope.usuarioId, $scope.empresaId, $scope.sucursalesId)
-             .success(getDepartamentosSuccessCallback)
-             .error(errorCallBack);
+
          filtroRepository.getTipoOrden()
              .success(getTipoOrdenSuccessCallback)
              .error(errorCallBack);
         $('#viewNewEscalamiento').modal('show');
     };    
 
-    //Botón para mostrar aprobadores
-    var getAprobadores = function(esc){
-        $scope.listaTipoProceso = _tipoProceso;
-        parametroRepository.getAprobadores(esc.empIdempresa, esc.sucIdsucursal, esc.depIddepartamento, esc.tipoidtipoorden)
-            .success(getAprobadoresSuccessCallback1)
-            .error(errorCallBack);
-    };
+   
 
-    var listaApp = [];
-    //Success obtiene lista de aprobadores por nivel
-    var getAprobadoresSuccessCallback1 = function (data) {
-        $scope.listaAprobadores = data;        
-        alertFactory.success('Aprobadores cargados.',data);
-    }; 
     
     //Carga y muestra los controles del modal viewUpdateEscalamiento
     $scope.MostrarUpdateEscalamiento = function(escalamiento){
-        /*if(escalamiento==null)
-        {
-            $scope.NewMancomunadouSet();
-        }*/
-        //$scope.listaTipoProceso = _tipoProceso;      
-        //Carga los tipos de proceso de la entidad
-        $scope.listaTipoProceso = _tipoProceso;
+        
+       /* $scope.listaTipoProceso = _tipoProceso;
 
          filtroRepository.getSucursales($scope.usuarioId, $scope.empresaId)
              .success(getSucursalesSuccessCallback)
@@ -615,8 +649,8 @@ var app = angular.module('formApp', []);
              .error(errorCallBack);
          filtroRepository.getTipoOrden()
              .success(getTipoOrdenSuccessCallback)
-             .error(errorCallBack);
-         
+             .error(errorCallBack);*/
+          $scope.Pagina= "updEscalamiento";
          $scope.OpcionDefaultTipoProceso = escalamiento.nodoNombre;
          $scope.OpcionDefaultEmpresa = escalamiento.empNombre;
          $scope.OpcionDefaultSucursal = escalamiento.sucNombre;
@@ -624,17 +658,39 @@ var app = angular.module('formApp', []);
          //$scope.OpcionDefaultEscalamientoId = escalamiento.escalamientoId;             
          $scope.OpcionDefaultTipoOrden = escalamiento.tipOrden;
          getAprobadores(escalamiento); 
+        //success(getAprobadoresSuccessCallback1);
          
-         if($scope.listaAprobadores!=null){
+
+         if($scope.listaAprobadores!=null)
+         {
+
             $scope.levels = null;
             $scope.levels = $scope.listaAprobadores;
-            nivel =  $scope.levels.length-1;           
-         }       
-             
+            nivel =  $scope.levels.length-1;          
+         } 
 
-        $('#viewUpdateEscalamiento').modal('show');                
+       
+
+        $('#viewUpdateEscalamiento').modal('show');   
+
+       
     };
+ //Botón para mostrar aprobadores
+    var getAprobadores = function(esc){
+        $scope.editEscalamiento=esc;
+        $scope.listaTipoProceso = _tipoProceso;
+        parametroRepository.getAprobadores($scope.empresaId, $scope.sucursalId, $scope.departamentoId, $scope.tipoOrdenId)
+        .success(getAprobadoresSuccessCallback1)
+        .error(errorCallBack);
+          
+        };
+   
+    //Success obtiene lista de aprobadores por nivel
+    var getAprobadoresSuccessCallback1 = function (data) {
+        $scope.listaAprobadores = data;                   
+        alertFactory.success('Aprobadores cargados.',data);
 
+    }; 
     //Asigna el objeto Tipo Proceso
     $scope.NewEscSetTipoProceso = function(tip) {
         //Cargo los tipos de proceso de la entidad
@@ -654,11 +710,13 @@ var app = angular.module('formApp', []);
     
     var nivel = 0;
     //añade nuevo nivel (tab) en el tabset
-    var addNewLevel = function() {                
+    var addNewLevel = function() {  
+             
         nivel = nivel+1;        
         $scope.levels.push({
-            nivel: nivel,
-            nivelTexto: "Nivel " + nivel,
+
+            nivel: nivel ,
+            nivelTexto: "Nivel " + nivel ,
             active: true,
             idUsuarioAutoriza1: 0,            
             idUsuarioAutoriza2: 0,
@@ -719,28 +777,108 @@ var app = angular.module('formApp', []);
         $('#viewNewEscalamiento').modal('hide');
         angular.forEach($scope.levels, function(level){
             $scope.levels.push()
-            parametroRepository.insertEscalamiento($scope.productoId, $scope.nodoId, $scope.empresaId, $scope.sucursalId, $scope.departamentoId, $scope.tipoOrdenId,level.nivel, level.idUsuarioAutoriza1, level.idUsuarioAutoriza2, level.idUsuarioAutoriza3, 
+            //parametroRepository.insertEscalamiento($scope.productoId, $scope.nodoId, $scope.empresaId, $scope.sucursalId, $scope.departamentoId, $scope.tipoOrdenId,level.nivel, level.idUsuarioAutoriza1, level.idUsuarioAutoriza2, level.idUsuarioAutoriza3, 
+            parametroRepository.insertEscalamiento($scope.tipoProcesoItem, $scope.nodoId, $scope.empresaItem, $scope.sucursalItem, $scope.deptoItem, $scope.tipoOrdenItem,level.nivel, level.idUsuarioAutoriza1, level.idUsuarioAutoriza2, level.idUsuarioAutoriza3,             
                 level.minutos)
             .success(getInsertEscalamientoSuccessCallback)
             .error(errorCallBack);
         });
         $scope.initLevels();        
     };
-
+ 
     //realiza el update para escalamiento
     $scope.updateEscalamiento = function(escalamiento){   
-        $('#viewNewEscalamiento').modal('hide');     
+        $('#viewUpdateEscalamiento').modal('hide');
+        var i=0;
         angular.forEach($scope.levels, function(level){
-            $scope.levels.push()
-            parametroRepository.updateEscalamiento(level.nivel, level.idUsuarioAutoriza1, level.idUsuarioAutoriza2, level.idUsuarioAutoriza3, 
+             listaApp[i]= $scope.productoId + '|'+ $scope.nodoId + '|'+  $scope.empresaId + '|'+  $scope.sucursalId + '|'+  $scope.departamentoId + '|'+  $scope.tipoOrdenId + '|'+ level.nivel + '|'+  level.idUsuarioAutoriza1 + '|'+  level.idUsuarioAutoriza2 + '|'+  level.idUsuarioAutoriza3 + '|'+              
+                level.minutos;
+           /* $scope.levels.push()  
+             listaApp = [];          
+            parametroRepository.updateEscalamiento($scope.productoId, $scope.nodoId, $scope.empresaId, $scope.sucursalId, $scope.departamentoId, $scope.tipoOrdenId,level.nivel, level.idUsuarioAutoriza1, level.idUsuarioAutoriza2, level.idUsuarioAutoriza3,             
                 level.minutos)
             .success(getUpdateEscalamientoSuccessCallback)
-            .error(errorCallBack);
+            .error(errorCallBack);*/
+            i = i + 1;
         });
-        $scope.levels = null;        
+
+        parametroRepository.updateEscalamiento(listaApp )
+            .success(getUpdateEscalamientoSuccessCallback)
+            .error(errorCallBack);
+
+
+        $scope.initLevels();  
+        
     };
+
+    
     /********************************************************************************************************************************************************************************************************************************/
+     //Boton de buscar usuario
+    $scope.MostrarOcultarController=function($scope) {
+        $scope.menuState = {}
+        $scope.menuState.show = false;
+            $scope.cambiarMenu = function() {
+               
+                $scope.menuState.show = !$scope.menuState.show;
+            };
+            $scope.LimpiarMenu = function() {
+                
+                $scope.menuState.show = !$scope.menuState.hide;
+            };
+            $scope.clearSearch = function() {
+                $scope.buscarText = null;
+                $scope.menuState.show = !$scope.menuState.hide;
+               
+            }
+    }
+
+    function setActiveTab(id) {
+        _.each(levels.nivel, function (tab) {
+            if (tab.RecordID === id)
+                tab.active = true;
+            else
+                tab.active = false;
+        });
+    }
+
+    $scope.$on("redirectCancelled", function () {
+        setActiveTab(currentTab);
+    });
+
+    $scope.$on("resetResettables", function () {
+        currentTab = redirectTab;
+    });
+
+    $scope.onTabSelect = function (tabId) {
+        
+        $scope.levels.splice(tabId,1);
 
 
+       /* redirectTab = tabId;
+        deleteLevel(tabId);
 
+        $state.go('app.Tabs.TabRender', {
+            recordID: tabId,
+        }); */           
+    }; 
+     $scope.deleteLevel = function(tab) {  
+             
+        nivel = tab;        
+        $scope.levels.Delete({
+           
+        });        
+    };
+    /*/Limpia TextBox al presionar la x
+     $scope.clearSearch = function() {
+        $scope.buscarText = null;
+        cambiarMenu();
+    }*/
+/*****************************************************************************/
+ $scope.cerrarUsuario = function(escalamiento){
+
+     $('#viewUsuarios').modal('hide');
+     $('#viewUpdateEscalamiento').modal('hide');
+ };
+/******************************************************************************/
 }); 
+

@@ -92,6 +92,43 @@
 	</div>
 </div>
 
+<!-- Aprobadores-->
+<div class="modal fade"  id="viewAprobadores" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog"  role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+       <!-- <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>-->
+        <h4 class="modal-title" id="myModalLabel">Aprobadores</h4>
+      </div>
+      <div class="modal-body">
+        <table class="table table-condensed" id="tblAprobadoress"> 
+					<thead> 
+						<tr> 
+							<th>Nivel</th> 
+							<th>Aprobador 1</th> 
+							<th>Aprobador 2</th> 
+							<th>Aprobador 3</th> 
+							<th tooltip="Minutos para escalar">Minutos</th>
+						</tr> 
+					</thead> 
+					<tbody>                                                                                      
+						<tr ng-repeat="aprobador in listaAprobadores"> 
+							<td >{{ aprobador.nivel }}</td> 
+							<td >{{ aprobador.usuarioAutoriza1 }}</td> 
+							<td >{{ aprobador.usuarioAutoriza2 }}</td> 
+							<td >{{ aprobador.usuarioAutoriza3 }}</td> 
+							<td >{{ aprobador.minutos }}</td> 
+						</tr> 
+					</tbody> 
+				</table>
+      </div>                                                                                 
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+      </div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
 
 <!-- Agregar nuevo Escalamiento-->
 <div class="modal fade" tabindex="-1" id="viewNewEscalamiento">
@@ -186,7 +223,8 @@
 	      	<button class="btn btn-default" type="button" id="btnAgregalevel" ng-click="addLevel()">Agregar Nivel</button>
 	      </div> 
 	      </br>   		       		  	      	
-	      	<tabset>	      	
+	      	<tabset>	
+	      	<button type="button" class="close" ng-click="onTabSelect(level.nivel)" aria-label="Close" style="color:black; opacity:0.9"><span aria-hidden="true">&times;</span></button>      	
 	      		<tab ng-repeat="level in levels" heading="{{level.nivelTexto}}" active=level.active >
 		            <div  ng-init="level=level">
 		            	<div class="form-group">		            	
@@ -251,12 +289,13 @@
   </div><!-- /.modal-dialog -->
 </div><!-- /.modal -->	
 
+
 <!-- Editar Escalamiento-->
 <div class="modal fade" tabindex="-1" id="viewUpdateEscalamiento">
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
-        <!--<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>-->
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
         <h4 class="modal-title">Actualizar Escalamiento</h4>
       </div>
       <div class="modal-body">
@@ -267,7 +306,7 @@
 				</div>
 				<div class="col-sm-9 col-horizontal-align">
 					 <div class="dropdown">
-					  <button class="btn btn-default dropdown-toggle" type="button" id="dropdownProceso" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true" >
+					  <button class="btn btn-default dropdown-toggle disabled" type="button" id="updropdownProceso" readonly="true" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true" >
 					    {{OpcionDefaultTipoProceso}}{{ currentTipoProceso.nombre }}<span class="caret"></span>
 					  </button>					  
 					  <ul class="dropdown-menu" aria-labelledby="dropdownProceso">
@@ -285,7 +324,7 @@
 	    	</div>
 	    	<div class="col-sm-9 col-horizontal-align">
 	    		<div class="dropdown">
-				  <button class="btn btn-default dropdown-toggle" type="button" id="dropdownEmpresa" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+				  <button class="btn btn-default dropdown-toggle disabled" type="button" id="updropdownEmpresa" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
 				    {{OpcionDefaultEmpresa}} {{ currentEmpresa.nombre }}<span class="caret"></span>
 				  </button>
 				  <ul class="dropdown-menu" aria-labelledby="dropdownEmpresa">
@@ -300,7 +339,7 @@
 			</div>
 			<div class="col-sm-9 col-horizontal-align">
 				<div class="dropdown">
-				  <button class="btn btn-default dropdown-toggle" type="button" id="dropdownSucursal" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+				  <button class="btn btn-default dropdown-toggle disabled" type="button" id="updropdownSucursal" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
 				    {{OpcionDefaultSucursal}} {{ currentSucursal.nombre }}<span class="caret"></span>
 				  </button>
 				  <ul class="dropdown-menu" aria-labelledby="dropdownSucursal">
@@ -315,7 +354,7 @@
 			</div>
 			<div class="col-sm-9 col-horizontal-align">
 				<div class="dropdown">
-				  <button class="btn btn-default dropdown-toggle" type="button" id="dropdownDepartamento" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+				  <button class="btn btn-default dropdown-toggle disabled" type="button" id="updropdownDepartamento" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
 				   {{OpcionDefaultDepartamento}} {{ currentDepto.nombre }}<span class="caret"></span>
 				  </button>
 				  <ul class="dropdown-menu" aria-labelledby="dropdownDepartamento">
@@ -330,7 +369,7 @@
 			</div>
 			<div class="col-sm-9 col-horizontal-align">
 				<div class="dropdown">
-				  <button class="btn btn-default dropdown-toggle" type="button" id="dropdownTipoOrden" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+				  <button class="btn btn-default dropdown-toggle disabled" type="button" id="updropdownTipoOrden" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
 				    {{OpcionDefaultTipoOrden}} {{ currentTipoOrden.nombre }}<span class="caret"></span>
 				  </button>
 				  <ul class="dropdown-menu" aria-labelledby="dropdownTipoOrden">
@@ -339,14 +378,22 @@
 				</div></br>
 			</div>
 		  </div>
-	      <div>	  
-	      <div style="text-align:right">
-	      	<button class="btn btn-default" type="button" id="btnAgregalevel" ng-click="addLevel()">Agregar Nivel</button>
+
+	     <div>	
+	      <div class="form-group">	 
+	               	     	  <div style="text-align:right">
+	      						  <button class="btn btn-default" type="button" id="btnAgregalevel" ng-click="addLevel()">Agregar Nivel</button>
+	      						  
+	      					</div>
 	      </div> 
-	      </br>   		       		  	      	
-	      	<tabset>	      	
-	      		<tab ng-repeat="level in levels" heading="{{level.nivelTexto}}" active=level.active >
-		            <div  ng-init="level=level">
+	      </br>   
+	      		       		  	      	
+	      	<tabset  >	 
+	      	    <button type="button" class="close" ng-click="onTabSelect(level.nivel)" aria-label="Close" style="color:black; opacity:0.9"><span aria-hidden="true">&times;</span></button>
+	      		<tab ng-repeat="level in levels" heading="{{level.nivelTexto}}" active="level.active"  >
+
+				
+		            <div  ng-init="level=level"   >
 		            	<div class="form-group">		            	
 		               		<div class="col-sm-3 col-horizontal-align">
 						        <label for="Aprobador1">Aprobador 1</label>
@@ -394,9 +441,10 @@
 						        <input type="number" id="numMinutos" ng-model="level.minutos" min="1"  style="width:60px" ng-click="">
 						    </div>	
 						</div>						 						   											    						  		
-		            </div>     
-		        </tab>		       	      		
+		            </div>
+		        </tab>	     		
 	      	</tabset>
+	      	
 	      </div> 
         </form>    	
       </div>                                                                                 
@@ -405,10 +453,105 @@
 		<button class="btn btn-default" type="button" id="btnAgregarNivel" ng-click="updateEscalamiento(escalamiento)">Guardar</button>
         <!--<button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>-->
       </div>
+
     </div><!-- /.modal-content -->
   </div><!-- /.modal-dialog -->
 </div><!-- /.modal -->	
 
+<!-- Usuarios-->
+<div class="modal fade" tabindex="-1" id="viewUsuarios">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+		<!--<button type="button" class="close" ng-click="cerrarUsuario()" ><span aria-hidden="true">&times;</span></button>-->
+		
+        <h4 class="modal-title">Usuarios</h4>
+
+      </div>
+      <div class="modal-body">
+      	<form>
+      	<div ng-controller='MostrarOcultarController'>
+      		<label>Usuario: <input ng-model="buscarText" ></label>
+      		
+      		<!--<a class="clear" ng-click="buscarText = null">
+    			<span class="glyphicon glyphicon-remove"></span>
+			</a>-->
+      		<button class="btn btn-default" type="button" id="btnBuscarU" ng-click="cambiarMenu()">Buscar</button>	
+      		<button class="btn btn-default" type="button" id="btnBuscarU" ng-click="clearSearch()">Limpiar</button>		
+				
+
+      		<!--<div class="modal-footer">
+      			<button class="btn btn-default" type="button" id="btnBuscarU" ng-click="cambiarMenu()">Buscar</button>				
+      		</div>-->
+      		<ul ng-show='menuState.show'>
+      		<table class="table table-condensed" >
+      		
+					<thead> 
+						<tr> 
+							<th>Id Usuario</th> 
+							<th>Nombre</th> 
+							<th>Apellido Paterno</th> 
+							<th>Apellido Materno</th>
+							<th>Selecciona</th>  
+						</tr> 
+					</thead> 
+					<tbody ng-repeat="usuarios in usuarios | filter:buscarText"> 
+						<tr> 
+							<td >{{ usuarios.idUsuario }}</td> 
+							<td >{{ usuarios.nombre }}</td> 
+							<td >{{ usuarios.aPaterno }}</td> 
+							<td >{{ usuarios.aMaterno }}</td>
+							<td >
+								<button class="btn btn-success" type="button" id="btnSeleccionar">
+									<span class="glyphicon glyphicon-ok" aria-hidden="true" ng-click="SetUsuario(usuarios)"></span>
+								</button> 
+							</td>
+						</tr>
+					</tbody> 
+				</table>
+				</ul>
+				</div>
+		</form> 
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+<!-- Aprobadores-->
+<div class="modal fade"  id="viewAprobadores" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog"  role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="myModalLabel">Aprobadores</h4>
+      </div>
+      <div class="modal-body">
+        <table class="table table-condensed" id="tblAprobadoress"> 
+					<thead> 
+						<tr> 
+							<th>Nivel</th> 
+							<th>Aprobador 1</th> 
+							<th>Aprobador 2</th> 
+							<th>Aprobador 3</th> 
+							<th tooltip="Minutos para escalar">Minutos</th>
+						</tr> 
+					</thead> 
+					<tbody>                                                                                      
+						<tr ng-repeat="aprobador in listaAprobadores"> 
+							<td >{{ aprobador.nivel }}</td> 
+							<td >{{ aprobador.usuarioAutoriza1 }}</td> 
+							<td >{{ aprobador.usuarioAutoriza2 }}</td> 
+							<td >{{ aprobador.usuarioAutoriza3 }}</td> 
+							<td >{{ aprobador.minutos }}</td> 
+						</tr> 
+					</tbody> 
+				</table>
+      </div>                                                                                 
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+      </div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
 
 <!--Agregar nuevo Mancomunado-->
 <div class="modal fade" tabindex="-1" id="viewNewMancomunado">
@@ -502,48 +645,7 @@
     </div><!-- /.modal-content -->
   </div><!-- /.modal-dialog -->
 </div><!-- /.modal -->
-
-
-<!-- Usuarios-->
-<div class="modal fade" tabindex="-1" id="viewUsuarios">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-		<!--<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>-->
-        <h4 class="modal-title">Usuarios</h4>
-      </div>
-      <div class="modal-body">
-      	<form>
-      		<label>Usuario: <input ng-model="buscarText"></label>
-      		<table class="table table-condensed"> 
-					<thead> 
-						<tr> 
-							<th>Id Usuario</th> 
-							<th>Nombre</th> 
-							<th>Apellido Paterno</th> 
-							<th>Apellido Materno</th>
-							<th>Selecciona</th>  
-						</tr> 
-					</thead> 
-					<tbody ng-repeat="usuarios in usuarios | filter:buscarText"> 
-						<tr> 
-							<td >{{ usuarios.idUsuario }}</td> 
-							<td >{{ usuarios.nombre }}</td> 
-							<td >{{ usuarios.aPaterno }}</td> 
-							<td >{{ usuarios.aMaterno }}</td>
-							<td >
-								<button class="btn btn-success" type="button" id="btnSeleccionar">
-									<span class="glyphicon glyphicon-ok" aria-hidden="true" ng-click="SetUsuario(usuarios)"></span>
-								</button> 
-							</td>
-						</tr>
-					</tbody> 
-				</table>
-		</form> 
-    </div><!-- /.modal-content -->
-  </div><!-- /.modal-dialog -->
-</div><!-- /.modal -->
-
+7
 <!-- Agregar nuevo Mancomunado-->
 <!-- Update Mancomunado-->
 <div class="modal fade" tabindex="-1" id="viewUpdMancomunado">
@@ -641,45 +743,11 @@
 </div><!-- /.modal -->
 
 
-<!-- Aprobadores-->
-<div class="modal fade" tabindex="-1" id="viewAprobadores">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title">Aprobadores</h4>
-      </div>
-      <div class="modal-body">
-        <table class="table table-condensed" id="tblAprobadores"> 
-					<thead> 
-						<tr> 
-							<th>Nivel</th> 
-							<th>Aprobador 1</th> 
-							<th>Aprobador 2</th> 
-							<th>Aprobador 3</th> 
-							<th tooltip="Minutos para escalar">Minutos</th>
-						</tr> 
-					</thead> 
-					<tbody>                                                                                      
-						<tr ng-repeat="aprobador in listaAprobadores"> 
-							<td >{{ aprobador.nivel }}</td> 
-							<td >{{ aprobador.usuarioAutoriza1 }}</td> 
-							<td >{{ aprobador.usuarioAutoriza2 }}</td> 
-							<td >{{ aprobador.usuarioAutoriza3 }}</td> 
-							<td >{{ aprobador.minutos }}</td> 
-						</tr> 
-					</tbody> 
-				</table>
-      </div>                                                                                 
-      <div class="modal-footer">
-        <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
-      </div>
-    </div><!-- /.modal-content -->
-  </div><!-- /.modal-dialog -->
-</div><!-- /.modal -->
+
+
+
+
 
 </div>
 
 
-
- 

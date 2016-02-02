@@ -2,14 +2,14 @@
 
 registrationModule.factory('filtroRepository', function ($http) {
     return {
-        getEmpresas: function(idEmpleado){
-            return $http.get(filtroUrl + '1|' + idEmpleado);
+        getEmpresas: function(){
+            return $http.get(filtroUrl + '1|');
          },
-        getSucursales: function(idEmpleado, idEmpresa){
-            return $http.get(filtroUrl + '2|' + idEmpleado + '|' + idEmpresa);
+        getSucursales: function(idEmpresa){
+            return $http.get(filtroUrl + '2|' + idEmpresa);
         },
-        getDepartamentos: function(idEmpleado, idEmpresa, idSucursal){
-            return $http.get(filtroUrl + '3|' + idEmpleado + '|' + idEmpresa + '|' + idSucursal);
+        getDepartamentos: function(idEmpresa, idSucursal){
+            return $http.get(filtroUrl + '3|' + idEmpresa + '|' + idSucursal);
         },
         getTipoOrden: function(){
             return $http.get(filtroUrl + '4|');
